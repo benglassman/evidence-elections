@@ -9,7 +9,9 @@ libraryDependencies ++= Seq(
   jdbc,
   ehcache,
   ws,
-  guice
+  guice,
+  "com.adrianhurt" %% "play-bootstrap" % "1.4-P26-B4-SNAPSHOT"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
