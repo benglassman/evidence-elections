@@ -1,12 +1,28 @@
 package controllers
 
+import model.SunInfo
 import javax.inject._
 import play.api._
 import play.api.mvc._
+import play.api.libs.ws._
+import play.api.http.HttpEntity
+import java.util.Date
+import java.text.SimpleDateFormat
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class Application @Inject() (components: ControllerComponents)
-    extends AbstractController(components) {
-  def index = Action {
-    Ok(views.html.index())
+
+class Application @Inject() (components: ControllerComponents, ws: WSClient)
+extends AbstractController(components) {
+  def index = Action.async {
+    val responseF = ws.url("http://api.sunrise-sunset.org/json?" +
+    "lat=-33.8830&lng=151.2167&formatted=0").get()
+    responseF.map { response =>
+    val json = response.json
+    val sunriseTimeStr = (json \ "results" \ "sunrise").as[String]
+    val sunsetTimeStr = (json \ "results" \ "sunset").as[String]
+    val sunInfo = SunInfo(sunriseTimeStr, sunsetTimeStr)
+    Ok(views.html.index(sunInfo))
+    }
   }
 }
