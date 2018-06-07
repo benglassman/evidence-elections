@@ -10,7 +10,8 @@ libraryDependencies ++= Seq(
   ehcache,
   ws,
   guice,
-  "com.adrianhurt" %% "play-bootstrap" % "1.4-P26-B4-SNAPSHOT"
+  "com.adrianhurt" %% "play-bootstrap" % "1.4-P26-B4-SNAPSHOT",
+  "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
