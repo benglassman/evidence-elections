@@ -11,8 +11,8 @@ libraryDependencies ++= Seq(
   ws,
   guice,
   "com.adrianhurt" %% "play-bootstrap" % "1.4-P26-B4-SNAPSHOT",
-  "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
-
+  "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided",
+  "mysql" % "mysql-connector-java" % "5.1.46"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
