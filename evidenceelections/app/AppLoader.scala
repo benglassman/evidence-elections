@@ -15,6 +15,9 @@ import play.filters.HttpFiltersComponents
 import scala.concurrent.Future
 import services.{SunService, WeatherService}
 import filters.StatsFilter
+import play.api.db.{DBComponents, HikariCPComponents}
+import play.api.db.evolutions.{DynamicEvolutions, EvolutionsComponents}
+import scalikejdbc.config.DBs
 
 class AppApplicationLoader extends ApplicationLoader { def load(context: Context) = {
   LoggerConfigurator(context.environment.classLoader).foreach { cfg => cfg.configure(context.environment)
@@ -23,21 +26,27 @@ class AppApplicationLoader extends ApplicationLoader { def load(context: Context
 }
 
 class AppComponents(context: Context) extends
-  BuiltInComponentsFromContext(context) with AhcWSComponents
-  with AssetsComponents with HttpFiltersComponents {
+  BuiltInComponentsFromContext(context) with AhcWSComponents with EvolutionsComponents
+  with DBComponents with HikariCPComponents with AssetsComponents {
+
   override lazy val controllerComponents = wire[DefaultControllerComponents]
   lazy val prefix: String = "/"
   lazy val router: Router = wire[Routes]
   lazy val applicationController = wire[Application]
   lazy val sunService = wire[SunService]
   lazy val weatherService = wire[WeatherService]
+  override lazy val dynamicEvolutions = new DynamicEvolutions
+
   applicationLifecycle.addStopHook { () =>
     Logger.info("The app is about to stop")
+    DBs.closeAll()
     Future.successful(Unit)
   }
 
   val onStart = {
     Logger.info("The app is about to start")
+    applicationEvolutions
+    DBs.setupAll()
     statsActor ! Ping
   }
 
