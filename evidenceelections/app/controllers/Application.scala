@@ -37,4 +37,8 @@ class Application(components: ControllerComponents,
     } yield {
       Ok(views.html.index(sunInfo, temperature, requests)) }
   }
+
+  def login = Action {
+    Ok(views.html.login())
+  }
 }
