@@ -10,14 +10,14 @@ import _root_.controllers.AssetsComponents
 import actors.StatsActor
 import actors.StatsActor.Ping
 import akka.actor.Props
-import play.filters.HttpFiltersComponents
 
 import scala.concurrent.Future
-import services.{SunService, WeatherService}
+import services.{AuthService, SunService, WeatherService}
 import filters.StatsFilter
 import play.api.db.{DBComponents, HikariCPComponents}
 import play.api.db.evolutions.{DynamicEvolutions, EvolutionsComponents}
 import scalikejdbc.config.DBs
+import play.api.cache.ehcache.EhCacheComponents
 
 class AppApplicationLoader extends ApplicationLoader { def load(context: Context) = {
   LoggerConfigurator(context.environment.classLoader).foreach { cfg => cfg.configure(context.environment)
@@ -27,7 +27,7 @@ class AppApplicationLoader extends ApplicationLoader { def load(context: Context
 
 class AppComponents(context: Context) extends
   BuiltInComponentsFromContext(context) with AhcWSComponents with EvolutionsComponents
-  with DBComponents with HikariCPComponents with AssetsComponents {
+  with DBComponents with HikariCPComponents with EhCacheComponents with AssetsComponents {
 
   override lazy val controllerComponents = wire[DefaultControllerComponents]
   lazy val prefix: String = "/"
@@ -36,6 +36,7 @@ class AppComponents(context: Context) extends
   lazy val sunService = wire[SunService]
   lazy val weatherService = wire[WeatherService]
   override lazy val dynamicEvolutions = new DynamicEvolutions
+  lazy val authService = new AuthService(defaultCacheApi.sync)
 
   applicationLifecycle.addStopHook { () =>
     Logger.info("The app is about to stop")

@@ -6,21 +6,27 @@ import actors.StatsActor
 import akka.util.Timeout
 import akka.pattern.ask
 import akka.actor.ActorSystem
-
-import services.SunService
-import services.WeatherService
-
-import play.api._
+import services.{AuthService, SunService, WeatherService}
 import play.api.mvc._
-import play.api.libs.ws._
+import play.api.data.Form
+import play.api.data.Forms._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+
+case class UserLoginData(username: String, password: String)
 
 class Application(components: ControllerComponents,
                   sunService: SunService,
                   weatherService: WeatherService,
-                  actorSystem: ActorSystem)
+                  actorSystem: ActorSystem, authService: AuthService)
   extends AbstractController(components) {
+
+  val userDataForm = Form {
+    mapping(
+      "username" -> nonEmptyText,
+      "password" -> nonEmptyText
+    )(UserLoginData.apply)(UserLoginData.unapply)
+  }
 
   def index = Action.async {
     val lat = -33.8830
@@ -38,7 +44,22 @@ class Application(components: ControllerComponents,
       Ok(views.html.index(sunInfo, temperature, requests)) }
   }
 
+  def doLogin = Action { implicit request =>
+    userDataForm.bindFromRequest.fold(
+    formWithErrors => Ok(views.html.login(Some("Wrong data"))),
+      userData => {
+      val maybeCookie = authService.login(
+        userData.username, userData.password)
+      maybeCookie match {
+        case Some(cookie) =>
+          Redirect("/").withCookies(cookie)
+        case None =>
+          Ok(views.html.login(Some("Login failed"))) }
+      }
+    )
+  }
+
   def login = Action {
-    Ok(views.html.login())
+    Ok(views.html.login(None))
   }
 }
