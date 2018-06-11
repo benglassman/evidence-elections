@@ -12,7 +12,7 @@ import actors.StatsActor.Ping
 import akka.actor.Props
 
 import scala.concurrent.Future
-import services.{AuthService, SunService, WeatherService}
+import services.{AuthService, SunService, UserAuthAction, WeatherService}
 import filters.StatsFilter
 import play.api.db.{DBComponents, HikariCPComponents}
 import play.api.db.evolutions.{DynamicEvolutions, EvolutionsComponents}
@@ -37,6 +37,7 @@ class AppComponents(context: Context) extends
   lazy val weatherService = wire[WeatherService]
   override lazy val dynamicEvolutions = new DynamicEvolutions
   lazy val authService = new AuthService(defaultCacheApi.sync)
+  lazy val userAuthAction = wire[UserAuthAction]
 
   applicationLifecycle.addStopHook { () =>
     Logger.info("The app is about to stop")

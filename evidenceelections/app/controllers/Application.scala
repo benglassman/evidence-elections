@@ -3,6 +3,8 @@ package controllers
 import java.util.concurrent.TimeUnit
 
 import actors.StatsActor
+import services.UserAuthAction
+
 import akka.util.Timeout
 import akka.pattern.ask
 import akka.actor.ActorSystem
@@ -18,7 +20,9 @@ case class UserLoginData(username: String, password: String)
 class Application(components: ControllerComponents,
                   sunService: SunService,
                   weatherService: WeatherService,
-                  actorSystem: ActorSystem, authService: AuthService)
+                  actorSystem: ActorSystem,
+                  authService: AuthService,
+                  userAuthAction: UserAuthAction)
   extends AbstractController(components) {
 
   val userDataForm = Form {
@@ -62,4 +66,9 @@ class Application(components: ControllerComponents,
   def login = Action {
     Ok(views.html.login(None))
   }
+
+  def restricted = userAuthAction { userAuthRequest =>
+    Ok(views.html.restricted(userAuthRequest.user))
+  }
+
 }
