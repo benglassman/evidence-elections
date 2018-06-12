@@ -12,7 +12,7 @@ import actors.StatsActor.Ping
 import akka.actor.Props
 
 import scala.concurrent.Future
-import services.{AuthService, SunService, UserAuthAction, WeatherService}
+import services.{AuthService, UserAuthAction}
 import filters.StatsFilter
 import play.api.db.{DBComponents, HikariCPComponents}
 import play.api.db.evolutions.{DynamicEvolutions, EvolutionsComponents}
@@ -33,8 +33,6 @@ class AppComponents(context: Context) extends
   lazy val prefix: String = "/"
   lazy val router: Router = wire[Routes]
   lazy val applicationController = wire[Application]
-  lazy val sunService = wire[SunService]
-  lazy val weatherService = wire[WeatherService]
   override lazy val dynamicEvolutions = new DynamicEvolutions
   lazy val authService = new AuthService(defaultCacheApi.sync)
   lazy val userAuthAction = wire[UserAuthAction]

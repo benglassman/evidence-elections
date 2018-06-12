@@ -8,7 +8,7 @@ import services.UserAuthAction
 import akka.util.Timeout
 import akka.pattern.ask
 import akka.actor.ActorSystem
-import services.{AuthService, SunService, WeatherService}
+import services.AuthService
 import play.api.mvc._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -18,8 +18,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 case class UserLoginData(username: String, password: String)
 
 class Application(components: ControllerComponents,
-                  sunService: SunService,
-                  weatherService: WeatherService,
                   actorSystem: ActorSystem,
                   authService: AuthService,
                   userAuthAction: UserAuthAction)
@@ -33,19 +31,12 @@ class Application(components: ControllerComponents,
   }
 
   def index = Action.async {
-    val lat = -33.8830
-    val lon = 151.2167
-    val sunInfoF = sunService.getSunInfo(lat, lon)
-    val temperatureF = weatherService.getTemperature(lat, lon)
-    implicit val timeout = Timeout(5, TimeUnit.SECONDS)
     val requestsF = (actorSystem.actorSelection(StatsActor.path) ?
       StatsActor.GetStats).mapTo[Int]
     for{
-      sunInfo <- sunInfoF
-      temperature <- temperatureF
       requests <- requestsF
     } yield {
-      Ok(views.html.index(sunInfo, temperature, requests)) }
+      Ok(views.html.index(requests)) }
   }
 
   def doLogin = Action { implicit request =>
