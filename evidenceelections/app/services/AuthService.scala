@@ -10,6 +10,7 @@ import org.mindrot.jbcrypt.BCrypt
 import play.api.mvc.{Cookie, RequestHeader}
 import play.api.cache.SyncCacheApi
 import scalikejdbc._
+import org.mindrot.jbcrypt.BCrypt
 
 import scala.concurrent.duration.Duration
 
@@ -24,6 +25,14 @@ class AuthService(cacheApi: SyncCacheApi) {
     } yield {
       cookie
     }
+  }
+
+  def signUp(user_name: String, passwordText: String): Option[Cookie] = {
+    val password = BCrypt.hashpw(passwordText, BCrypt.gensalt())
+    DB localTx  { implicit session =>
+      val newUser = sql"INSERT INTO user (user_name, password) values($user_name, $password)".update().apply()
+    }
+    login(user_name,password)
   }
 
   private def checkUser(user_name: String, password: String): Option[User] = {

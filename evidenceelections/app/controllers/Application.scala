@@ -59,6 +59,25 @@ class Application(components: ControllerComponents,
     Ok(views.html.login(None))
   }
 
+  def doSignup = Action { implicit request =>
+    userDataForm.bindFromRequest.fold(
+      formWithErrors => Ok(views.html.login(Some("Wrong data"))),
+      userData => {
+        val maybeCookie = authService.signUp(
+          userData.username, userData.password)
+        maybeCookie match {
+          case Some(cookie) =>
+            Redirect("/").withCookies(cookie)
+          case None =>
+            Ok(views.html.login(Some("Signup failed"))) }
+      }
+    )
+  }
+
+  def signup = Action {
+    Ok(views.html.login(None))
+  }
+
   def restricted = userAuthAction { userAuthRequest =>
     Ok(views.html.restricted(userAuthRequest.user))
   }
