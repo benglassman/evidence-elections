@@ -31,6 +31,7 @@ class Application(components: ControllerComponents,
   }
 
   def index = Action.async {
+    implicit val timeout = Timeout(5, TimeUnit.SECONDS)
     val requestsF = (actorSystem.actorSelection(StatsActor.path) ?
       StatsActor.GetStats).mapTo[Int]
     for{
