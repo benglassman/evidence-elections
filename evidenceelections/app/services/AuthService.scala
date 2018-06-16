@@ -10,7 +10,6 @@ import org.mindrot.jbcrypt.BCrypt
 import play.api.mvc.{Cookie, RequestHeader}
 import play.api.cache.SyncCacheApi
 import scalikejdbc._
-import org.mindrot.jbcrypt.BCrypt
 
 import scala.concurrent.duration.Duration
 
@@ -32,7 +31,7 @@ class AuthService(cacheApi: SyncCacheApi) {
     DB localTx  { implicit session =>
       val newUser = sql"INSERT INTO user (user_name, password) values($user_name, $password)".update().apply()
     }
-    login(user_name,password)
+    login(user_name,passwordText)
   }
 
   private def checkUser(user_name: String, password: String): Option[User] = {
@@ -41,7 +40,8 @@ class AuthService(cacheApi: SyncCacheApi) {
       maybeUser.flatMap { user =>
         if (BCrypt.checkpw(password, user.password)) {
           Some(user)
-        } else None
+        } else
+        None
       }
     }
   }
