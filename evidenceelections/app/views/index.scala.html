@@ -10,5 +10,12 @@
     <body>
         <h1>Be Informed!!</h1>
         <div>Requests: @requests</div>
+        <div>
+            <ul>
+            @races.map { race =>
+            <li>@race.raceType Election in @race.state</li>
+                }
+            </ul>
+        </div>
     </body>
 </html>
