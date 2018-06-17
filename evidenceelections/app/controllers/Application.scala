@@ -43,6 +43,7 @@ class Application(components: ControllerComponents,
                       on race.candidate1id = c1.candidateid
                       left join elections.candidates c2
                       on race.candidate2id=c2.candidateid
+                      order by race.raceid desc
                       limit 10
         """
         .map(Race.fromRS).list().apply()
