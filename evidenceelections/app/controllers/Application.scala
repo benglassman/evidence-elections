@@ -4,14 +4,15 @@ import java.util.concurrent.TimeUnit
 
 import actors.StatsActor
 import services.UserAuthAction
-
 import akka.util.Timeout
 import akka.pattern.ask
 import akka.actor.ActorSystem
+import model.User
 import services.AuthService
 import play.api.mvc._
 import play.api.data.Form
 import play.api.data.Forms._
+import scalikejdbc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -31,13 +32,20 @@ class Application(components: ControllerComponents,
   }
 
   def index = Action.async {
+    val races = DB.readOnly { implicit session =>
+      val race = sql"""
+                      select race.raceType, state.statename from elections.race left join elections.state
+                      on race.state = state.stateid limit 10
+        """
+        .list.apply()
+    }
     implicit val timeout = Timeout(5, TimeUnit.SECONDS)
     val requestsF = (actorSystem.actorSelection(StatsActor.path) ?
       StatsActor.GetStats).mapTo[Int]
     for{
       requests <- requestsF
     } yield {
-      Ok(views.html.index(requests)) }
+      Ok(views.html.index(races, requests)) }
   }
 
   def doLogin = Action { implicit request =>
