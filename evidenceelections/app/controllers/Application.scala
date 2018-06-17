@@ -7,6 +7,7 @@ import services.UserAuthAction
 import akka.util.Timeout
 import akka.pattern.ask
 import akka.actor.ActorSystem
+import model.Race
 import model.User
 import services.AuthService
 import play.api.mvc._
@@ -32,13 +33,22 @@ class Application(components: ControllerComponents,
   }
 
   def index = Action.async {
-    val races = DB.readOnly { implicit session =>
+    val races: List[Race] = DB.readOnly { implicit session =>
       val race = sql"""
-                      select race.raceType, state.statename from elections.race left join elections.state
-                      on race.state = state.stateid limit 10
+                      select race.raceid, race.raceType, state.statename, race.candidate1id, c1.name as c1name, c1.party as c1party, race.candidate2id, c2.name as c2name, c2.party as c2party
+                      from elections.race
+                      left join elections.state
+                      on race.state = state.stateid
+                      left join elections.candidates c1
+                      on race.candidate1id = c1.candidateid
+                      left join elections.candidates c2
+                      on race.candidate2id=c2.candidateid
+                      limit 10
         """
-        .list.apply()
+        .map(Race.fromRS).list().apply()
+      race
     }
+    println("races: " + races)
     implicit val timeout = Timeout(5, TimeUnit.SECONDS)
     val requestsF = (actorSystem.actorSelection(StatsActor.path) ?
       StatsActor.GetStats).mapTo[Int]
