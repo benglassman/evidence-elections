@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Run the test and package the code...
+      - sbt run       
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - sbt package
+artifacts:
+  files:
+    - evidenceelections/target/scala-2.2.12/evidence-elections_2.12-1.0-SNAPSHOT.jar
