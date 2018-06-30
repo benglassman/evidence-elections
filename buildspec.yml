@@ -24,7 +24,7 @@ phases:
       - pip install --upgrade awscli
       - java -version
       - javac -version
-      - echo %JAVA_HOME%
+      - whereis java -2
   pre_build:
     commands:
       - $(aws ecr get-login --no-include-email --region us-east-1)
