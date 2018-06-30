@@ -11,11 +11,11 @@ phases:
       - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
       - apt-get update -y
       - apt-get install -y apt-transport-https ca-certificates software-properties-common
-      - apt install ca-certificates-java -y
-      - sudo /var/lib/dpkg/info/ca-certificates-java.postinst configure
       - add-apt-repository -y ppa:openjdk-r/ppa
       - sudo apt-get update -y
       - apt-get install -y openjdk-8-jdk
+      - apt install ca-certificates-java -y
+      - sudo /var/lib/dpkg/info/ca-certificates-java.postinst configure
       - echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
       - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
       - apt-get update -y
@@ -24,7 +24,9 @@ phases:
       - pip install --upgrade awscli
       - java -version
       - javac -version
-      - whereis java -2
+      - whereis java
+      - sudo update-alternatives --config java
+      - echo "2"
   pre_build:
     commands:
       - $(aws ecr get-login --no-include-email --region us-east-1)
