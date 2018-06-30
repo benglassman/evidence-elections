@@ -11,7 +11,7 @@ phases:
       - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
       - apt-get update -y
       - apt-get install -y apt-transport-https ca-certificates software-properties-common
-      - sudo apt install ca-certificates-java
+      - apt install ca-certificates-java -y
       - sudo /var/lib/dpkg/info/ca-certificates-java.postinst configure
       - add-apt-repository -y ppa:openjdk-r/ppa
       - sudo apt-get update -y
