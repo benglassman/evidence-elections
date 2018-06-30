@@ -22,11 +22,7 @@ phases:
       - apt-get install -y sbt
       - pip install --upgrade pip
       - pip install --upgrade awscli
-      - java -version
-      - javac -version
-      - whereis java
-      - sudo update-alternatives --config java
-      - echo "2"
+
   pre_build:
     commands:
       - $(aws ecr get-login --no-include-email --region us-east-1)
