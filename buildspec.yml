@@ -8,6 +8,8 @@ phases:
   install:
     commands:
       - echo "$(lsb_release -cs)"
+      - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+      - sudo /var/lib/dpkg/info/ca-certificates-java.postinst configure
       - apt-get update -y
       - apt-get install -y apt-transport-https ca-certificates software-properties-common
       - add-apt-repository -y ppa:openjdk-r/ppa
