@@ -5,6 +5,8 @@ scalaVersion := "2.12.2"
 lazy val root = (project in file(".")).enablePlugins(PlayScala,DockerPlugin)
 pipelineStages := Seq(digest)
 
+dockerRepository:= some("981392027332.dkr.ecr.us-east-1.amazonaws.com/evidence-elections/")
+
 libraryDependencies ++= Seq(
   jdbc,
   ehcache,
