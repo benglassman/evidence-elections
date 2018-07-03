@@ -1,0 +1,19 @@
+@import model.Race
+@import model.Candidate
+
+@(id: Long, race: Race, maybeErrorMessage: Option[String])
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <h1>Race @race.id</h1>
+    @maybeErrorMessage.map { errorMessage =>
+    <span class="label bg--error">@errorMessage</span>
+    }
+    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+</head>
+<body>
+<h4>
+@race.raceType Election in @race.state with @race.Candidate1.name facing off against @race.Candidate2.name
+</h4>
+</body>
+</html>

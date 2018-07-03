@@ -101,4 +101,26 @@ class Application(components: ControllerComponents,
     Ok(views.html.restricted(userAuthRequest.user))
   }
 
+  def raceView(id: Long) = Action {
+    DB.readOnly { implicit session =>
+      val maybeRace = sql"""
+                      select race.raceid, race.raceType, state.statename, race.candidate1id, c1.name as c1name, c1.party as c1party, race.candidate2id, c2.name as c2name, c2.party as c2party
+                      from elections.race
+                      left join elections.state
+                      on race.state = state.stateid
+                      left join elections.candidates c1
+                      on race.candidate1id = c1.candidateid
+                      left join elections.candidates c2
+                      on race.candidate2id=c2.candidateid
+                      where race.raceid= $id
+        """
+        .map(Race.fromRS).single().apply()
+      maybeRace match {
+        case Some(race) =>
+          Ok(views.html.race(id,race,None))
+        case None =>
+          Ok(views.html.login(Some("Race not found!!")))
+      }
+    }
+  }
 }
