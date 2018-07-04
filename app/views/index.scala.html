@@ -14,7 +14,7 @@
             <ul>
             @races.map { race =>
                 <li>
-                    <a href='@routes.Application.raceView(race.id.toLong)'>@race.raceType Election in @race.state</a>
+                    <a href='@routes.Application.raceView(race.id)'>@race.raceType Election in @race.state</a>
                 </li>
                 }
             </ul>
