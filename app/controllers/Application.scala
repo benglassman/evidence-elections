@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import actors.StatsActor
 import services.UserAuthAction
+import services.VideoService
 import akka.util.Timeout
 import akka.pattern.ask
 import akka.actor.ActorSystem
@@ -22,6 +23,7 @@ case class UserLoginData(username: String, password: String)
 class Application(components: ControllerComponents,
                   actorSystem: ActorSystem,
                   authService: AuthService,
+                  videoService: VideoService,
                   userAuthAction: UserAuthAction)
   extends AbstractController(components) {
 
@@ -43,7 +45,7 @@ class Application(components: ControllerComponents,
                       on race.candidate1id = c1.candidateid
                       left join elections.candidates c2
                       on race.candidate2id=c2.candidateid
-                      order by race.raceid desc
+                      order by race.raceid asc
                       limit 10
         """
         .map(Race.fromRS).list().apply()
@@ -115,9 +117,10 @@ class Application(components: ControllerComponents,
                       where race.raceid= $id
         """
         .map(Race.fromRS).single().apply()
+      val ids: List[String] = videoService.getIdsByRace(id)
       maybeRace match {
         case Some(race) =>
-          Ok(views.html.race(id,race,None))
+          Ok(views.html.race(id,race,ids,None))
         case None =>
           Ok(views.html.login(Some("Race not found!!")))
       }
