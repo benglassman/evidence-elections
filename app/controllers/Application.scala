@@ -1,5 +1,7 @@
 package controllers
 
+import java.math.BigInteger
+import java.security.SecureRandom
 import java.util.concurrent.TimeUnit
 
 import actors.StatsActor
@@ -8,8 +10,11 @@ import services.VideoService
 import akka.util.Timeout
 import akka.pattern.ask
 import akka.actor.ActorSystem
+import helpers.Auth0Config
 import model.Race
 import model.User
+import play.api.cache
+import play.api.cache.SyncCacheApi
 import services.AuthService
 import play.api.mvc._
 import play.api.data.Form
@@ -24,7 +29,8 @@ class Application(components: ControllerComponents,
                   actorSystem: ActorSystem,
                   authService: AuthService,
                   videoService: VideoService,
-                  userAuthAction: UserAuthAction)
+                  userAuthAction: UserAuthAction,
+                  cache: SyncCacheApi)
   extends AbstractController(components) {
 
   val userDataForm = Form {
@@ -76,9 +82,9 @@ class Application(components: ControllerComponents,
     )
   }
 
-  def login = Action {
-    Ok(views.html.login(None))
-  }
+//  def login = Action {
+//    Ok(views.html.login(None))
+//  }
 
   def doSignup = Action { implicit request =>
     userDataForm.bindFromRequest.fold(
@@ -126,4 +132,41 @@ class Application(components: ControllerComponents,
       }
     }
   }
+
+  def login = Action {
+    val config = Auth0Config.get()
+    // Generate random state parameter
+    object RandomUtil {
+      private val random = new SecureRandom()
+
+      def alphanumeric(nrChars: Int = 24): String = {
+        new BigInteger(nrChars * 5, random).toString(32)
+      }
+    }
+    val state = RandomUtil.alphanumeric()
+    var audience = config.audience
+    cache.set("state", state)
+    if (config.audience == ""){
+      audience = String.format("https://%s/userinfo",config.domain)
+    }
+
+    val query = String.format(
+      "authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=openid profile&audience=%s&state=%s",
+      config.clientId,
+      config.callbackURL,
+      audience,
+      state
+    )
+    Redirect(String.format("https://%s/%s",config.domain,query))
+  }
+
+  def logout = Action {
+    val config = Auth0Config.get()
+    Redirect(String.format(
+      "https://%s/v2/logout?client_id=%s&returnTo=http://localhost:9000",
+      config.domain,
+      config.clientId)
+    ).withNewSession
+  }
+
 }
