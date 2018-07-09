@@ -1,9 +1,5 @@
 package controllers
 
-// app/controllers/Callback.scala
-
-package controllers
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import javax.inject.Inject
