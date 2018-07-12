@@ -1,6 +1,7 @@
 package helpers
 
 import play.api.Play
+import play.api.Configuration
 
 case class Auth0Config(secret: String, clientId: String, callbackURL: String, domain: String, audience: String)
 object Auth0Config {

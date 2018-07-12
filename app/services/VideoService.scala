@@ -3,7 +3,7 @@ package services
 import com.sun.xml.internal.bind.v2.TODO
 import scalikejdbc._
 
-class VideoService {
+class VideoService() {
 
   import com.google.api.services.youtube.{YouTube, YouTubeRequestInitializer}
   import com.google.api.services.youtube.model.{Video => GVideo}

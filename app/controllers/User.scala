@@ -1,12 +1,11 @@
 package controllers
 
-import javax.inject.Inject
 import play.api.cache._
 import play.api.libs.json._
 import play.api.mvc.{AbstractController, Action, _}
 
 
-class User @Inject() (components: ControllerComponents, cache: SyncCacheApi) extends AbstractController(components) {
+class User (components: ControllerComponents, cache: SyncCacheApi) extends AbstractController(components) {
   def AuthenticatedAction(f: Request[AnyContent] => Result): Action[AnyContent] = {
     Action { request =>
       (request.session.get("idToken").flatMap { idToken =>

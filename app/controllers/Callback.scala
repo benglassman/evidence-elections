@@ -13,8 +13,9 @@ import play.api.libs.json.Json.toJsFieldJsValueWrapper
 import play.api.libs.ws._
 import play.api.mvc.{AbstractController, Action,ControllerComponents}
 import helpers.Auth0Config
+import play.api.Configuration
 
-class Callback (components: ControllerComponents, cache:SyncCacheApi, ws: WSClient) extends AbstractController(components) {
+class Callback (components: ControllerComponents, cache:SyncCacheApi, ws: WSClient, config: play.api.Configuration) extends AbstractController(components) {
 
   def callback(codeOpt: Option[String] = None, stateOpt: Option[String] = None) = Action.async {
     if (stateOpt == cache.get("state")) {
@@ -24,7 +25,7 @@ class Callback (components: ControllerComponents, cache:SyncCacheApi, ws: WSClie
         getToken(code).flatMap { case (idToken, accessToken) =>
           getUser(accessToken).map { user =>
             cache.set(idToken + "profile", user)
-            Redirect(routes.User2.index())
+            Redirect(routes.User.index())
               .withSession(
                 "idToken" -> idToken,
                 "accessToken" -> accessToken
