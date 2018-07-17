@@ -1,12 +1,14 @@
-var webpack = require(' webpack');
+var webpack = require('webpack');
 module.exports = {
-    entry: './ ui/ entry.js',
-    output: {path: __dirname + '/ public/ compiled', filename: 'bundle.js'},
+    entry: './ui/entry.js',
+    output: {path: __dirname + '/public/compiled', filename: 'bundle.js'},
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\. jsx? $/, loader: 'babel-loader',
-                include: /ui/, query: {presets: [' es2015', 'stage-0', 'react']}}
+                test: /\.jsx?$/, loader: 'babel-loader',
+                include: /ui/, query: {presets: ['babel-preset-env','babel-preset-stage-0','react']},
+                exclude: /node_modules/
+            }
         ]
     }
-}
+};

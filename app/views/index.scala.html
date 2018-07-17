@@ -8,12 +8,13 @@
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
     </head>
     <body>
-        <div class="login-box auth0-box before">
-            <img src="https://i.cloudup.com/StzWWrY34s.png" />
-            <h3>Auth0 Example</h3>
-            <p>Zero friction identity infrastructure, built for developers</p>
-            <a class="btn btn-primary btn-lg btn-block" href="/login">SignIn</a>
-        </div>
+        <div id="reactView"></div>
+    @*<div class="login-box auth0-box before">*@
+            @*<img src="https://i.cloudup.com/StzWWrY34s.png" />*@
+            @*<h3>Auth0 Example</h3>*@
+            @*<p>Zero friction identity infrastructure, built for developers</p>*@
+            @*<a class="btn btn-primary btn-lg btn-block" href="/login">SignIn</a>*@
+        @*</div>*@
         <h1>Knowledge is Power!!</h1>
         <div>Requests: @requests</div>
         <div>
@@ -26,4 +27,5 @@
             </ul>
         </div>
     </body>
+    <script src="@routes.Assets.versioned("compiled/bundle.js")"></script>
 </html>
