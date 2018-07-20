@@ -1,4 +1,5 @@
-import controllers.Application
+import play.Configuration
+import controllers.{Application, Callback, User}
 import play.api.ApplicationLoader.Context
 import play.api._
 import play.api.libs.ws.ahc.AhcWSComponents
@@ -12,12 +13,14 @@ import actors.StatsActor.Ping
 import akka.actor.Props
 
 import scala.concurrent.Future
-import services.{AuthService, UserAuthAction}
+import services.VideoService
 import filters.StatsFilter
 import play.api.db.{DBComponents, HikariCPComponents}
 import play.api.db.evolutions.{DynamicEvolutions, EvolutionsComponents}
 import scalikejdbc.config.DBs
 import play.api.cache.ehcache.EhCacheComponents
+import play.api.cache.SyncCacheApi
+
 
 class AppApplicationLoader extends ApplicationLoader { def load(context: Context) = {
   LoggerConfigurator(context.environment.classLoader).foreach { cfg => cfg.configure(context.environment)
@@ -30,12 +33,14 @@ class AppComponents(context: Context) extends
   with DBComponents with HikariCPComponents with EhCacheComponents with AssetsComponents {
 
   override lazy val controllerComponents = wire[DefaultControllerComponents]
+
   lazy val prefix: String = "/"
   lazy val router: Router = wire[Routes]
-  lazy val applicationController = wire[Application]
+  lazy val applicationController = new Application(controllerComponents, actorSystem, videoService, defaultCacheApi.sync)
+  lazy val callBackController = new Callback(controllerComponents, defaultCacheApi.sync, wsClient, configuration)
+  lazy val userController = new User(controllerComponents, defaultCacheApi.sync)
   override lazy val dynamicEvolutions = new DynamicEvolutions
-  lazy val authService = new AuthService(defaultCacheApi.sync)
-  lazy val userAuthAction = wire[UserAuthAction]
+  lazy val videoService = new VideoService()
 
   applicationLifecycle.addStopHook { () =>
     Logger.info("The app is about to stop")

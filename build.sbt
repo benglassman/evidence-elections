@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc" % "3.0.0",
   "org.scalikejdbc" %% "scalikejdbc-config"  % "3.0.0",
   "ch.qos.logback"  %  "logback-classic" % "1.2.3",
-  "de.svenkubiak" % "jBCrypt" % "0.4.1"
+  "de.svenkubiak" % "jBCrypt" % "0.4.1",
+  "com.google.apis" % "google-api-services-youtube" % "v3-rev204-1.23.0"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
