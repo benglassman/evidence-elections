@@ -1,6 +1,6 @@
 # evidence-elections
 
-How to Run the app:
+How to Run the app locally:
 
 1. Open Terminal or other shell
 2. Navigate to the root directory (~/evidenceElections)
