@@ -2,4 +2,4 @@
 
 # --- !Ups
 ALTER TABLE candidates
-ADD [COLUMN] name VARCHAR(20) AFTER candidateid;
+ADD COLUMN name VARCHAR(20) AFTER candidateid;
