@@ -7,6 +7,7 @@ class TopNavbar extends React.Component {
     render = () => {
         return <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <div className="container">
                 <a className="navbar-brand" href="#">Evidence Elections</a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -44,6 +45,7 @@ class TopNavbar extends React.Component {
                             <a className="btn btn-primary" href="/login">SignIn</a>
                         </div>
                     </div>
+                </div>
                 </div>
             </nav>
         </div>
