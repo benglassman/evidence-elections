@@ -18,20 +18,14 @@ class RaceTable extends React.Component {
     })};
     render () {
         console.log(this.state.raceInfo);
-        const options = this.state.raceInfo.map((item, index) => <li key={index}>{`${item.id} ${item.raceType} election in ${item.state}`}</li>)
+        const options = this.state.raceInfo.map((item, index) => <li key={index}>{`<a href='/race/(${item.id})' className="list-group-item">${item.raceType} election in ${item.state}`}</li>);
         return (
-            <ul>
+            <div class="col-sm-4">
+                <div class="list-group">
                 {options}
-            </ul>
+                </div>
+            </div>
         );
-        // return <table>
-        //     <tbody>
-        //         <tr>
-        //             {this.state.raceInfo}
-        //             {/*{this.state.raceInfo.map(x => <ObjectRow key={x.id} name={x.state} />)}*/}
-        //         </tr>
-        //     </tbody>
-        // </table>
     }
 }
 
