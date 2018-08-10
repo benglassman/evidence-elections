@@ -20,15 +20,15 @@
         <div id="navbarView"></div>
         <div class="container theme-showcase" role="main">
         <h1>Knowledge is Power!!</h1>
-        <div>Requests: @requests</div>
-        <div class="col-sm-4">
-            <div class="list-group">
-                @races.map { race =>
-                        <a href='@routes.Application.raceView(race.id)' class="list-group-item">@race.raceType Election in @race.state</a>
-                }
-            </div>
-        </div>
             <div id="raceTableView"></div>
+        <div>Requests: @requests</div>
+        @*<div class="col-sm-4">*@
+            @*<div class="list-group">*@
+                @*races.map { race =>*@
+                        @*<a href='@routes.Application.raceView(race.id)' class="list-group-item">@race.raceType Election in @race.state</a>*@
+                @*}*@
+            @*</div>*@
+        @*</div>*@
         </div> <!-- container div -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script src="@routes.Assets.versioned("compiled/bundle.js")"></script>
