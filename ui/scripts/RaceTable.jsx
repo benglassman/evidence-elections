@@ -5,7 +5,7 @@ class RaceTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            raceInfo:[{"id":1,"raceType":"Senate","state":"Connecticut","Candidate1":{"id":1,"name":"dem1","party":"Democrat"},"Candidate2":{"id":2,"name":"gop1","party":"Republican"}},{"id":2,"raceType":"Congress","state":"Connecticut","Candidate1":{"id":3,"name":"dem2","party":"Democrat"},"Candidate2":{"id":4,"name":"gop2","party":"Republican"}}]
+            raceInfo: [{"id":1,"raceType":"Loading your","state":"a second","Candidate1":{"id":1,"name":"dem1","party":"Democrat"},"Candidate2":{"id":2,"name":"gop1","party":"Republican"}}]
         }
     }
     componentDidMount () {
@@ -17,7 +17,7 @@ class RaceTable extends React.Component {
         });
     })};
     render () {
-        console.log(this.state.raceInfo)
+        console.log(this.state.raceInfo);
         const options = this.state.raceInfo.map((item, index) => <li key={index}>{`${item.id} ${item.raceType} election in ${item.state}`}</li>)
         return (
             <ul>
