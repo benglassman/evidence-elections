@@ -11,6 +11,21 @@ object Race {
       Candidate(rs.long("candidate1id"), rs.string("c1name"), rs.string("c1party")),
       Candidate(rs.long("candidate2id"), rs.string("c2name"), rs.string("c2party")))
   }
+  def getOne(id: Long): Option[Race] = DB.readOnly { implicit session =>
+    val maybeRace = sql"""
+                      select race.raceid, race.raceType, state.statename, race.candidate1id, c1.name as c1name, c1.party as c1party, race.candidate2id, c2.name as c2name, c2.party as c2party
+                      from elections.race
+                      left join elections.state
+                      on race.state = state.stateid
+                      left join elections.candidates c1
+                      on race.candidate1id = c1.candidateid
+                      left join elections.candidates c2
+                      on race.candidate2id=c2.candidateid
+                      where race.raceid= $id
+        """
+      .map(Race.fromRS).single().apply()
+    maybeRace
+  }
   def racesList: List[Race] = DB.readOnly { implicit session =>
     val race = sql"""
                       select race.raceid, race.raceType, state.statename, race.candidate1id, c1.name as c1name, c1.party as c1party, race.candidate2id, c2.name as c2name, c2.party as c2party
