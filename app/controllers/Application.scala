@@ -15,6 +15,7 @@ import play.api.cache.SyncCacheApi
 import play.api.mvc._
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.libs.json.Json
 import scalikejdbc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,22 +36,7 @@ class Application(components: ControllerComponents,
   }
 
   def index = Action.async {
-    val races: List[Race] = DB.readOnly { implicit session =>
-      val race = sql"""
-                      select race.raceid, race.raceType, state.statename, race.candidate1id, c1.name as c1name, c1.party as c1party, race.candidate2id, c2.name as c2name, c2.party as c2party
-                      from elections.race
-                      left join elections.state
-                      on race.state = state.stateid
-                      left join elections.candidates c1
-                      on race.candidate1id = c1.candidateid
-                      left join elections.candidates c2
-                      on race.candidate2id=c2.candidateid
-                      order by race.raceid asc
-                      limit 10
-        """
-        .map(Race.fromRS).list().apply()
-      race
-    }
+    val races= Race.racesList
     println("races: " + races)
     implicit val timeout = Timeout(5, TimeUnit.SECONDS)
     val requestsF = (actorSystem.actorSelection(StatsActor.path) ?
@@ -83,6 +69,11 @@ class Application(components: ControllerComponents,
           Ok(views.html.login(Some("Race not found!!")))
       }
     }
+  }
+
+  def raceJson = Action {
+    val races = Race.racesList
+    Ok(Json.toJson(races))
   }
 
   def login = Action {

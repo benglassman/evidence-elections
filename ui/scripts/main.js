@@ -1,8 +1,8 @@
 import Bootstrap from 'bootstrap'
 import React from 'react';
 import ReactDOM from 'react-dom';
-import IdentityComponent from './IdentityComponent.jsx';
 import TopNavbar from './TopNavbar.jsx';
+import RaceTable from './RaceTable.jsx';
 
 ReactDOM.render(<TopNavbar />, document.getElementById('navbarView'));
-// ReactDOM.render(<IdentityComponent />, document.getElementById('reactView'));
+ReactDOM.render(<RaceTable />, document.getElementById('raceTableView'));

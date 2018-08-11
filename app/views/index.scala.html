@@ -18,18 +18,12 @@
     <body>
         @*<div id="reactView"></div>*@
         <div id="navbarView"></div>
+        <div class="container theme-showcase" role="main">
         <h1>Knowledge is Power!!</h1>
+            <div id="raceTableView"></div>
         <div>Requests: @requests</div>
-        <div>
-            <ul>
-            @races.map { race =>
-                <li>
-                    <a href='@routes.Application.raceView(race.id)'>@race.raceType Election in @race.state</a>
-                </li>
-            }
-            </ul>
-        </div>
+        </div> <!-- container div -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script src="@routes.Assets.versioned("compiled/bundle.js")"></script>  
+        <script src="@routes.Assets.versioned("compiled/bundle.js")"></script>
     </body>
 </html>
