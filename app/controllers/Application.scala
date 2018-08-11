@@ -72,7 +72,7 @@ class Application(components: ControllerComponents,
   }
 
   def raceJson = Action {
-    val races= Race.racesList
+    val races = Race.racesList
     Ok(Json.toJson(races))
   }
 

@@ -11,13 +11,11 @@ class RaceTable extends React.Component {
     componentDidMount () {
     axios.get('/raceJson').then((response) => {
         const json = response.data;
-        console.log(json);
         this.setState({
             raceInfo:json
         });
     })};
     render () {
-        console.log(this.state.raceInfo);
         const options = this.state.raceInfo.map((item, index) => <a key={index} href='/race/(${item.id})'className="list-group-item">{`${item.raceType} election in ${item.state}`}</a>);
         return (
             <div class="col-sm-4">
