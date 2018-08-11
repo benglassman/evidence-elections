@@ -18,7 +18,7 @@ class RaceTable extends React.Component {
     })};
     render () {
         console.log(this.state.raceInfo);
-        const options = this.state.raceInfo.map((item, index) => <li key={index}>{`<a href='/race/(${item.id})' className="list-group-item">${item.raceType} election in ${item.state}`}</li>);
+        const options = this.state.raceInfo.map((item, index) => <a key={index} href='/race/(${item.id})'className="list-group-item">{`${item.raceType} election in ${item.state}`}</a>);
         return (
             <div class="col-sm-4">
                 <div class="list-group">
